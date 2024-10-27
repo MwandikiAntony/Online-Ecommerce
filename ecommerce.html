@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antony's Shop</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --card-background: #ffffff;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            padding-top: 80px;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+
+        .section {
+            display: none;
+            padding: 2rem 0;
+        }
+
+        .active-section {
+            display: block;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease-in-out;
+            background-color: var(--card-background);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: contain;
+            padding: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .btn-success {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+            border-color: #27ae60;
+        }
+
+        .toast {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #price-range {
+            width: 100%;
+        }
+
+        .section h2 {
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+
+        .list-group-item {
+            background-color: var(--card-background);
+            border: none;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        #tracking-form {
+            background-color: var(--card-background);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#"><i class="fas fa-store me-2"></i>Antony's Shop</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="home"><i class="fas fa-home me-1"></i>Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="products"><i class="fas fa-box me-1"></i>Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="cart"><i class="fas fa-shopping-cart me-1"></i>Cart</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="tracking"><i class="fas fa-truck me-1"></i>Order Tracking</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Home Section -->
+<section id="home" class="section active-section">
+    <div class="container">
+        <h2 class="text-center mb-5">Welcome to Antony's Shop</h2>
+        <p class="lead text-center mb-5">Discover our latest offers and trending products!</p>
+        <div id="new-products" class="row"></div>
+    </div>
+</section>
+
+<!-- Products Section -->
+<section id="products" class="section">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Products</h2>
+        <div class="row mb-4">
+            <div class="col-md-6 mx-auto">
+                <input type="text" id="search-bar" class="form-control mb-3" placeholder="Search for products...">
+            </div>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-6 mx-auto">
+                <label for="price-range" class="form-label">Filter by price: <span id="price-range-value">₹75000</span></label>
+                <input type="range" id="price-range" min="0" max="75000" value="75000" class="form-range">
+            </div>
+        </div>
+        <div id="product-list" class="row"></div>
+    </div>
+</section>
+
+<!-- Cart Section -->
+<section id="cart" class="section">
+    <div class="container">
+        <h2 class="text-center mb-5">Your Shopping Cart</h2>
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <ul id="cart-items" class="list-group mb-4"></ul>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4><strong>Total:</strong> ₹<span id="total-price">0.00</span></h4>
+                    <button id="checkout-btn" class="btn btn-primary btn-lg">Proceed to Checkout</button>
+                </div>
+                <div id="payment-form" class="mt-4" style="display:none;">
+                    <h3 class="mb-4">Payment Details</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label for="card-number" class="form-label">Card Number</label>
+                            <input type="text" class="form-control" id="card-number" placeholder="1234 5678 9012 3456">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="expiry-date" class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiry-date" placeholder="MM/YY">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cvv" placeholder="123">
+                            </div>
+                        </div>
+                        <button id="pay-btn" class="btn btn-success btn-lg w-100">Pay Now</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Order Tracking Section -->
+<section id="tracking" class="section">
+    <div class="container">
+        <h2 class="text-center mb-5">Track Your Order</h2>
+        <div class="row">
+            <div class="col-md-6 mx-auto">
+                <form id="tracking-form">
+                    <div class="mb-3">
+                        <label for="order-id" class="form-label">Order ID</label>
+                        <input type="text" class="form-control" id="order-id" placeholder="Enter Order ID">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Track Order</button>
+                </form>
+                <div id="order-status" class="mt-4 alert alert-info" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Toast Notification -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toast-container" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <strong class="me-auto">Notification</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toast-body"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const sections = document.querySelectorAll(".section");
+        const navLinks = document.querySelectorAll(".nav-link");
+        const newProductsContainer = document.getElementById("new-products");
+        const productListContainer = document.getElementById("product-list");
+        const cartItemsContainer = document.getElementById("cart-items");
+        const totalPriceContainer = document.getElementById("total-price");
+        const checkoutBtn = document.getElementById("checkout-btn");
+        const paymentForm = document.getElementById("payment-form");
+        const payBtn = document.getElementById("pay-btn");
+        const toastContainer = document.getElementById("toast-container");
+        const toastBody = document.getElementById("toast-body");
+        const priceRange = document.getElementById("price-range");
+        const priceRangeValue = document.getElementById("price-range-value");
+
+        const USD_TO_INR_RATE = 75;
+
+        function convertToINR(usdPrice) {
+            return (usdPrice * USD_TO_INR_RATE).toFixed(2);
+        }
+
+        let cart = [];
+        let total = 0;
+
+        // Section Navigation
+        navLinks.forEach(link => {
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+                const sectionId = e.target.closest('.nav-link').getAttribute("data-section");
+                sections.forEach(section => section.classList.remove("active-section"));
+                document.getElementById(sectionId).classList.add("active-section");
+            });
+        });
+
+        // Fetch Products and Display
+        const fetchProducts = async () => {
+            try {
+                const response = await axios.get('https://fakestoreapi.com/products');
+                displayProducts(response.data);
+            } catch (error) {
+                console.error("Error fetching products:", error);
+                showToast("Failed to load products. Please try again later.");
+            }
+        };
+
+        const displayProducts = (products) => {
+            newProductsContainer.innerHTML = '';
+            productListContainer.innerHTML = '';
+            products.forEach(product => {
+                const inrPrice = convertToINR(product.price);
+                const productHTML = `
+                    <div class="col-md-4 col-lg-3 mb-4 product-card">
+                        <div class="card h-100">
+                            <img src="${product.image}" class="card-img-top" alt="${product.title}">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">${product.title}</h5>
+                                <p class="card-text flex-grow-1">${product.description.substring(0, 100)}...</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <span class="h5 mb-0">₹${inrPrice}</span>
+                                    <button class="btn btn-primary add-to-cart-btn" data-id="${product.id}" data-title="${product.title}" data-price="${inrPrice}">
+                                        <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                newProductsContainer.insertAdjacentHTML('beforeend', productHTML);
+                productListContainer.insertAdjacentHTML('beforeend', productHTML);
+            });
+
+            // Add to Cart
+            const addToCartBtns = document.querySelectorAll(".add-to-cart-btn");
+            addToCartBtns.forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = e.target.getAttribute("data-id");
+                    const title = e.target.getAttribute("data-title");
+                    const price = e.target.getAttribute("data-price");
+                    addToCart({ id, title, price });
+                });
+            });
+        };
+
+        // Add to Cart
+        const addToCart = (product) => {
+            cart.push(product);
+            total += parseFloat(product.price);
+            updateCart();
+            showToast(`${product.title} added to cart!`);
+        };
+
+        // Remove from Cart
+        const removeFromCart = (index) => {
+            const product = cart[index];
+            total -= parseFloat(product.price);
+            cart.splice(index, 1);
+            updateCart();
+            showToast(`${product.title} removed from cart!`);
+        };
+
+        // Update Cart Display
+        const updateCart = () => {
+            cartItemsContainer.innerHTML = '';
+            cart.forEach((product, index) => {
+                const cartItemHTML = `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="my-0">${product.title}</h6>
+                            <small class="text-muted">₹${product.price}</small>
+                        </div>
+                        <button class="btn btn-danger btn-sm remove-from-cart-btn" data-index="${index}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </li>
+                `;
+
+cartItemsContainer.insertAdjacentHTML('beforeend', cartItemHTML);
+            });
+
+            // Update Total Price
+            totalPriceContainer.textContent = total.toFixed(2);
+
+            // Add Remove Button Functionality
+            const removeBtns = document.querySelectorAll(".remove-from-cart-btn");
+            removeBtns.forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const index = e.target.closest('.remove-from-cart-btn').getAttribute("data-index");
+                    removeFromCart(index);
+                });
+            });
+
+            // Show/hide empty cart message
+            const emptyCartMessage = document.getElementById("empty-cart-message");
+            if (cart.length === 0) {
+                if (!emptyCartMessage) {
+                    cartItemsContainer.insertAdjacentHTML('beforebegin', '<p id="empty-cart-message" class="text-center">Your cart is empty.</p>');
+                }
+                checkoutBtn.disabled = true;
+            } else {
+                if (emptyCartMessage) {
+                    emptyCartMessage.remove();
+                }
+                checkoutBtn.disabled = false;
+            }
+        };
+
+        // Show Toast Notification
+        const showToast = (message) => {
+            toastBody.textContent = message;
+            const toast = new bootstrap.Toast(toastContainer);
+            toast.show();
+        };
+
+        // Checkout
+        checkoutBtn.addEventListener("click", () => {
+            if (cart.length === 0) {
+                showToast("Your cart is empty!");
+            } else {
+                paymentForm.style.display = "block";
+                paymentForm.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+
+        // Handle Payment
+        payBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (cart.length === 0) {
+                showToast("Your cart is empty!");
+                return;
+            }
+
+            // Simulate payment process
+            payBtn.disabled = true;
+            payBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+            
+            setTimeout(() => {
+                showToast("Payment successful!");
+                cart = [];
+                total = 0;
+                updateCart();
+                paymentForm.style.display = "none";
+                payBtn.disabled = false;
+                payBtn.innerHTML = 'Pay Now';
+            }, 2000);
+        });
+
+        // Order Tracking
+        const trackingForm = document.getElementById("tracking-form");
+        const orderStatus = document.getElementById("order-status");
+
+        trackingForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const orderId = document.getElementById("order-id").value;
+
+            // Simulate order tracking
+            orderStatus.style.display = "none";
+            trackingForm.querySelector('button').disabled = true;
+            trackingForm.querySelector('button').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Tracking...';
+            
+            setTimeout(() => {
+                orderStatus.textContent = `Order #${orderId} is being processed and will be delivered soon.`;
+                orderStatus.style.display = "block";
+                trackingForm.querySelector('button').disabled = false;
+                trackingForm.querySelector('button').innerHTML = 'Track Order';
+            }, 1500);
+        });
+
+        // Search Products
+        const searchBar = document.getElementById("search-bar");
+        searchBar.addEventListener("input", () => {
+            const searchQuery = searchBar.value.toLowerCase();
+            const productCards = document.querySelectorAll(".product-card");
+
+            productCards.forEach(card => {
+                const productTitle = card.querySelector(".card-title").textContent.toLowerCase();
+                const productDescription = card.querySelector(".card-text").textContent.toLowerCase();
+                if (productTitle.includes(searchQuery) || productDescription.includes(searchQuery)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+
+        // Price Range Filter
+        priceRange.addEventListener("input", () => {
+            const maxPrice = priceRange.value;
+            priceRangeValue.textContent = `₹${maxPrice}`;
+
+            const productCards = document.querySelectorAll(".product-card");
+            productCards.forEach(card => {
+                const productPrice = parseFloat(card.querySelector(".h5").textContent.replace("₹", ""));
+                if (productPrice <= maxPrice) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+
+        // Initialize Products
+        fetchProducts();
+    });
+</script>
+
+</body>
+</html>
